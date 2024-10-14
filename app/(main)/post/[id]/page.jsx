@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { createClient } from "@/utils/supabase/server";
 
 export default async function PostDetail({params}) {
     const supabase = createClient();

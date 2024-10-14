@@ -1,4 +1,4 @@
-import SignOut from "../../app/login/actions";
+import SignOut from "../app/login/actions";
 import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
 
