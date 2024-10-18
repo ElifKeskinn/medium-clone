@@ -6,8 +6,8 @@ export default async function Home() {
     const supabase = createClient();
 
     const { data: posts, error } = await supabase
-        .from('posts')
-        .select('id, title, created_at, users(id, email)')
+        .from('posts_with_user')
+        .select('id, title, created_at, user_id, email')
         .order('created_at', { ascending: false });
 
     if (error){
@@ -24,7 +24,7 @@ export default async function Home() {
                     posts.map(post => (
                         <div key={post.id} className={styles.post}>
                             <h2><Link href={`/post/${post.id}`}>{post.title}</Link></h2>
-                            <p>Yazar: {post.users.email}</p>
+                            <p>Yazar: {post.email}</p>
                             <p>Tarih: {new Date(post.created_at).toLocaleDateString()}</p>
                         </div>
                     ))
