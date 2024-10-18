@@ -1,4 +1,4 @@
-import SignOut from "../app/login/actions";
+import {signOut} from "../app/login/actions";
 import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
 
@@ -19,7 +19,7 @@ export default async function MainHeader() {
           <ul>
             <li>  Hoşgeldin {user.email} </li>
             <li>
-              <form action={SignOut}>
+              <form action={signOut}>
                 <button>Çıkış yap</button>
               </form>
             </li>

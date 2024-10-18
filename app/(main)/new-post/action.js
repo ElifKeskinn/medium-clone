@@ -1,6 +1,7 @@
 'use server'
 
-import { redirect } from "next/dist/server/api-utils";
+import { redirect } from "next/navigation";
+import { createClient } from "@/utils/supabase/server";
 
 export async function SavePost(formData){
     const title = formData.get('title');
@@ -15,7 +16,7 @@ export async function SavePost(formData){
     }
 
 
-    const{error} = await supabase
+    const{data, error} = await supabase
     .from('posts')
     .insert(
         {title, content, user_id: user.id}  )
@@ -29,5 +30,5 @@ export async function SavePost(formData){
         return;
     }
 
-    redirect(`/posts/${data.id}`);
+    redirect(`/post/${data.id}`);
 }
