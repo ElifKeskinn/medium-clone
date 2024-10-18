@@ -7,6 +7,7 @@ import styles from './page.module.css';
 import LikeButton from "@/components/LikeButton";
 import { commentSave } from "./commentSave"; 
 import Comments from "./comments"; 
+import SaveButton from "@/components/SaveButton";
 
 export default async function PostDetail({ params }) {
   const supabase = createClient();
@@ -62,6 +63,7 @@ console.log(commentsWithUsers);
           <p>{post.content}</p>
           <p>Yazar: {post.email}</p>
           <LikeButton postId={post.id} />
+          <SaveButton postId={post.id} /> 
           {isOwner && (
               <div className={styles.actions}>
                   <Link href={`/post/${post.id}/edit`} className={styles.editButton}>Düzenle</Link>

@@ -22,10 +22,20 @@ export default async function ProfilePage() {
         return <p>Yazılarınızı çekerken hata oluştu.</p>;
     }
 
+    const { data: savedPosts, error: savedError } = await supabase
+    .from('bookmarks')
+    .select('post_id, posts(title, created_at)')
+    .eq('user_id', user.id);
+    if (savedError) {
+        console.log(savedError);
+        return <p>Kaydedilen postları çekerken hata oluştu.</p>;
+    }
+
     return (
         <div className={styles.container}>
             <h1>Profil</h1>
             <p>Email: {user.email}</p>
+
             <h2>Yazılarınız</h2>
             {posts && posts.length > 0 ? (
                 <ul className={styles.postList}>
@@ -38,6 +48,20 @@ export default async function ProfilePage() {
                 </ul>
             ) : (
                 <p>Henüz yazı oluşturmadınız.</p>
+                
+            )}
+             <h2>Kaydedilen Postlar</h2>
+            {savedPosts && savedPosts.length > 0 ? (
+                <ul className={styles.postList}>
+                    {savedPosts.map(saved => (
+                        <li key={saved.post_id} className={styles.postItem}>
+                            <Link href={`/post/${saved.post_id}`} className={styles.postLink}>{saved.posts.title}</Link>
+                            <span className={styles.postDate}>{new Date(saved.posts.created_at).toLocaleDateString()}</span>
+                        </li>
+                    ))}
+                </ul>
+            ) : (
+                <p>Henüz kaydedilen post yok.</p>
             )}
         </div>
     )
