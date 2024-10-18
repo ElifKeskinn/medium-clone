@@ -1,31 +1,26 @@
-'use server'
+'use client'
 
-import { createClient } from "@/utils/supabase/server";
-import { redirect } from "next/navigation";
+import React from 'react';
+import styles from './comments.module.css';
 
-export async function addComment(formData, { params }) {
-    const content = formData.get('content');
-    const supabase = createClient();
-
-    const { data: { user }, error: userError } = await supabase.auth.getUser();
-
-    if (userError || !user){
-        console.log('Kullanıcı girişi yapmadı veya hata oluştu:', userError);
-        redirect('/login');
-    }
-
-    const { error } = await supabase
-        .from('comments')
-        .insert({
-            content,
-            user_id: user.id,
-            post_id: params.id
-        });
-
-    if (error){
-        console.log(error);
-        return;
-    }
-
-    redirect(`/post/${params.id}`);
+export default function Comments({ comments }) {
+    return (
+        <div className={styles.commentsContainer}>
+            <h3>Yorumlar</h3>
+            {comments && comments.length > 0 ? (
+                comments.map(comment => (
+                    <div key={comment.id} className={styles.comment}>
+                        <p>{comment.content}</p>
+                        <p><em>Yazan: {comment.user?.email || 'Bilinmeyen Kullanıcı'}</em></p>
+                    </div>
+                ))
+            ) : (
+                <p>Henüz yorum yapılmamış.</p>
+            )}
+            <form action={`/post/${comments.postId}/comments`} method="POST" className={styles.commentForm}>
+                <textarea name="content" placeholder="Yorumunuz" required className={styles.textarea}></textarea>
+                <button type="submit" className={styles.button}>Yorum Gönder</button>
+            </form>
+        </div>
+    )
 }

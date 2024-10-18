@@ -1,67 +1,36 @@
-'use client'
+import EditPostForm from './EditPostForm';
+import { createClientInstance } from "@/utils/supabase/server";
+import { redirect } from 'next/navigation';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import styles from './page.module.css';
+export default async function EditPostPage({ params }) {
+    console.log('EditPostPage params:', params); 
 
-export default function EditPost({ params, post }) {
-    const router = useRouter();
-    const [title, setTitle] = useState(post.title);
-    const [content, setContent] = useState(post.content);
+    const supabase = createClientInstance();
+    const postId = params.id;
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        const res = await fetch(`/api/posts/${params.id}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ title, content }),
-        });
+    const { data: post, error } = await supabase
+        .from('posts_with_user')
+        .select('id, title, content, user_id')
+        .eq('id', postId)
+        .single();
 
-        if (res.ok) {
-            router.push(`/post/${params.id}`);
-        } else {
-            console.error('Yazı güncellenirken hata oluştu.');
-        }
-    };
+    if (error || !post) {
+        console.error('Post bulunamadı:', error);
+        return redirect('/');
+    }
 
-    const handleDelete = async () => {
-        const res = await fetch(`/api/posts/${params.id}`, {
-            method: 'DELETE',
-        });
+    const { data: userData, error: userError } = await supabase.auth.getUser();
+    const user = userData.user;
 
-        if (res.ok) {
-            router.push('/');
-        } else {
-            console.error('Yazı silinirken hata oluştu.');
-        }
-    };
+    if (userError || !user) {
+        console.error('Kullanıcı doğrulanamadı:', userError);
+        return redirect('/');
+    }
 
-    return (
-        <div className={styles.container}>
-            <h1>Yazıyı Düzenle</h1>
-            <form onSubmit={handleSubmit} className={styles.form}>
-                <input
-                    type="text"
-                    name="title"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    placeholder="Yazı Başlığı"
-                    required
-                    className={styles.input}
-                />
-                <textarea
-                    name="content"
-                    value={content}
-                    onChange={(e) => setContent(e.target.value)}
-                    placeholder="Yazı İçeriği"
-                    required
-                    className={styles.textarea}
-                ></textarea>
-                <button type="submit" className={styles.button}>Yazıyı Güncelle</button>
-            </form>
-            <button onClick={handleDelete} className={styles.deleteButton}>Yazıyı Sil</button>
-        </div>
-    );
+    if (user.id !== post.user_id) {
+        console.error('Kullanıcı bu yazıyı düzenleme yetkisine sahip değil.');
+        return redirect('/');
+    }
+
+    return <EditPostForm post={post} params={params} />;
 }

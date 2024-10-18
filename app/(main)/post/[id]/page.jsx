@@ -3,12 +3,11 @@ import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
 import styles from './page.module.css';
 import LikeButton from "@/components/LikeButton";
-import { addComment } from './comments';
+import addComment from "../../../actions/postActions";
 
 export default async function PostDetail({ params }) {
     const supabase = createClient();
 
-  // View üzerinden yazıyı ve kullanıcı bilgilerini çekiyoruz
   const { data: post, error: postError } = await supabase
   .from('posts_with_user')
   .select('id, title, content, created_at, user_id, email')
@@ -20,7 +19,6 @@ if (postError || !post) {
   return notFound();
 }
 
-// Yorumları çekiyoruz
 const { data: comments, error: commentsError } = await supabase
   .from('comments')
   .select('id, content, created_at, user_id')
@@ -31,7 +29,6 @@ if (commentsError) {
   console.log(commentsError);
 }
 
-// Yorumları kullanıcı bilgileri ile birleştiriyoruz
 const commentsWithUsers = await Promise.all(comments.map(async (comment) => {
   const { data: commentUser, error: commentUserError } = await supabase
       .from('auth.users')
@@ -46,7 +43,6 @@ const commentsWithUsers = await Promise.all(comments.map(async (comment) => {
   return { ...comment, user: commentUser };
 }));
 
-// Mevcut kullanıcıyı alıyoruz
 const { data: userData } = await supabase.auth.getUser();
 const currentUser = userData.user;
 

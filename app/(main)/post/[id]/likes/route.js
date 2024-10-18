@@ -44,7 +44,6 @@ export async function POST(request, { params }) {
         return NextResponse.json({ error: 'Kullanıcı girişi yapmadı.' }, { status: 401 });
     }
 
-    // Aynı kullanıcı aynı postu birden fazla beğenememesini sağla
     const { data, error: selectError } = await supabase
         .from('likes')
         .select('*')

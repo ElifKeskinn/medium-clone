@@ -2,50 +2,57 @@
 
 import { useState, useEffect } from 'react';
 import styles from './LikeButton.module.css';
+import { useRouter } from 'next/navigation';
 
 export default function LikeButton({ postId }) {
-    const [likes, setLikes] = useState(0);
     const [liked, setLiked] = useState(false);
+    const [count, setCount] = useState(0);
+    const router = useRouter();
 
     useEffect(() => {
-        // Beğeni sayısını çek
-        fetch(`/api/posts/${postId}/likes`)
-            .then(res => res.json())
-            .then(data => {
-                setLikes(data.count);
-                // Kullanıcının bu postu beğenip beğenmediğini kontrol et
-                fetch(`/api/posts/${postId}/likes/check`)
-                    .then(res => res.json())
-                    .then(checkData => setLiked(checkData.liked));
-            });
+        const fetchLikes = async () => {
+            const res = await fetch(`/post/${postId}/likes`);
+            const data = await res.json();
+            if (res.ok) {
+                setLiked(data.liked);
+                setCount(data.count);
+            }
+        };
+
+        fetchLikes();
     }, [postId]);
 
     const handleLike = async () => {
-        if (liked) {
-            // Beğeniyi kaldır
-            const res = await fetch(`/api/posts/${postId}/likes`, {
-                method: 'DELETE',
-            });
-            if (res.ok) {
-                setLikes(likes - 1);
-                setLiked(false);
-            }
-        } else {
-            // Beğeni ekle
-            const res = await fetch(`/api/posts/${postId}/likes`, {
+        if (!liked) {
+            const res = await fetch(`/post/${postId}/likes`, {
                 method: 'POST',
             });
+
             if (res.ok) {
-                setLikes(likes + 1);
                 setLiked(true);
+                setCount(count + 1);
+            } else {
+                const data = await res.json();
+                alert(data.error || 'Beğeni eklenirken bir hata oluştu.');
+            }
+        } else {
+            const res = await fetch(`/post/${postId}/likes`, {
+                method: 'DELETE',
+            });
+
+            if (res.ok) {
+                setLiked(false);
+                setCount(count - 1);
+            } else {
+                const data = await res.json();
+                alert(data.error || 'Beğeni kaldırılırken bir hata oluştu.');
             }
         }
     };
 
     return (
-        <button onClick={handleLike} className={styles.likeButton}>
-            {liked ? '👍 Beğenildi' : '👍 Beğen'}
-            <span className={styles.likeCount}>{likes}</span>
+        <button onClick={handleLike} className={styles.button}>
+            {liked ? 'Beğenildi 👍' : 'Beğen 👍'} ({count})
         </button>
     );
 }
