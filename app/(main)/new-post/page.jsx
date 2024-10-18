@@ -1,15 +1,19 @@
-import { SavePost } from "./action"
+'use client'
+
+import { SavePost } from './action';
+import styles from './page.module.css';
+
 export default function NewPost() {
     return (
-        <div>
-            <form action={SavePost}>
-
-                <input type="text" name="title" placeholder="yazı vaşlığı" required />
+        <div className={styles.container}>
+            <h1>Yeni Yazı Oluştur</h1>
+            <form action={SavePost} className={styles.form}>
+                <input type="text" name="title" placeholder="Yazı Başlığı" required className={styles.input} />
                 <br />
-                <input type="content" name="content" id="" placeholder="yazı içerği" required />
+                <textarea name="content" placeholder="Yazı İçeriği" required className={styles.textarea}></textarea>
                 <br />
-                <button>yaızyı paylaş</button>
+                <button type="submit" className={styles.button}>Yazıyı Paylaş</button>
             </form>
         </div>
     )
-} 
+}

@@ -3,32 +3,33 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 
-export async function SavePost(formData){
+export async function SavePost(formData) {
     const title = formData.get('title');
     const content = formData.get('content');
     const supabase = createClient();
 
-    const {data: user} = await supabase.auth.getUser();
+    const { data, error: userError } = await supabase.auth.getUser();
+    const user = data.user;
 
-    if (!user){
-        console.log('kullanıcı girişi yapmadı');
+    if (userError || !user) {
+        console.log('Kullanıcı girişi yapmadı veya hata oluştu:', userError);
         redirect('/login');
     }
 
 
-    const{data, error} = await supabase
-    .from('posts')
-    .insert(
-        {title, content, user_id: user.id}  )
-    .select()
-    .single()
-  
+    const { data: postData, error } = await supabase
+        .from('posts')
+        .insert({ title, content, user_id: user.id })
+        .select()
+        .single();
 
-
-    if(error){
+        console.log('Post Data:', postData);
+        console.log('Post Error:', error);
+        
+    if (error) {
         console.log(error);
         return;
     }
 
-    redirect(`/post/${data.id}`);
+    redirect(`/post/${postData.id}`);
 }

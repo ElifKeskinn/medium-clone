@@ -3,15 +3,25 @@ import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
 import styles from './page.module.css';
 import LikeButton from "@/components/LikeButton";
+import { addComment } from './comments';
 
 export default async function PostDetail({ params }) {
     const supabase = createClient();
 
     const { data: post, error: postError } = await supabase
-        .from('posts')
-        .select('id, title, content, created_at, users(id, email)')
-        .eq('id', params.id)
-        .single();
+    .from('posts')
+    .select(`
+        id, 
+        title, 
+        content, 
+        created_at, 
+        auth.users (
+            id, 
+            email
+        )
+    `)
+    .eq('id', params.id)
+    .single();
 
     if (postError || !post) {
         console.log(postError);
@@ -19,10 +29,19 @@ export default async function PostDetail({ params }) {
     }
 
     const { data: comments, error: commentsError } = await supabase
-        .from('comments')
-        .select('id, content, created_at, users(id, email)')
-        .eq('post_id', params.id)
-        .order('created_at', { ascending: true });
+    .from('comments')
+    .select(`
+        id, 
+        content, 
+        created_at, 
+        auth.users (
+            id, 
+            email
+        )
+    `)
+    .eq('post_id', params.id)
+    .order('created_at', { ascending: true });
+
 
     if (commentsError) {
         console.log(commentsError);
