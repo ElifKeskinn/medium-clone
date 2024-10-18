@@ -47,3 +47,57 @@ form {
     background-color: #218838;
   }
   
+  .interest-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center; 
+  }
+  
+  .checkbox-label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #f2f2f2;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid transparent;
+    margin: 5px;
+  }
+  
+  .checkbox-label:hover {
+    background-color: #e0e0e0;
+  }
+  
+  .checkbox-label input[type="checkbox"] {
+    display: none; 
+  }
+  
+  .checkbox-label input[type="checkbox"]:checked + span {
+    background-color: #d3eaff;
+    border: 1px solid #007bff;
+    color: #007bff;
+    box-shadow: 0 2px 5px rgba(0, 123, 255, 0.4);
+  }
+  
+  .checkbox-label span {
+    padding: 5px 10px;
+  }
+  
+  .legend {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .subtitle {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: #888;
+  }
+  

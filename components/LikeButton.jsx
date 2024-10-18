@@ -51,7 +51,7 @@ export default function LikeButton({ postId }) {
     };
 
     return (
-        <button onClick={handleLike} className={styles.button}>
+        <button onClick={handleLike} className={styles.likeButton}>
             {liked ? 'Beğenildi 👍' : 'Beğen 👍'} ({count})
         </button>
     );

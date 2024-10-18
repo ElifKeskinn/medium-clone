@@ -28,7 +28,7 @@ export default async function MainHeader() {
             ) : (
                 <div className={styles.authLinks}>
                     <Link href="/login" className={styles.link}>Giriş Yap</Link>
-                    <Link href="/login" className={styles.link}>Kayıt Ol</Link>
+                    <Link href="/signup" className={styles.link}>Kayıt Ol</Link>
                 </div>
             )}
         </header>
