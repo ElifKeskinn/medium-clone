@@ -1,0 +1,33 @@
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.postList {
+    list-style: none;
+    padding: 0;
+}
+
+.postItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #ccc;
+}
+
+.postLink {
+    color: #333;
+    text-decoration: none;
+    font-size: 1.1rem;
+}
+
+.postLink:hover {
+    text-decoration: underline;
+}
+
+.postDate {
+    font-size: 0.9rem;
+    color: #777;
+}
