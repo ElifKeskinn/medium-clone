@@ -1,5 +1,5 @@
 'use server'
-//sigout sigup login
+//sigout signup login
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
